@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  	<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+
+  	<style>
+li{
+    border-bottom: 1px dotted #CCCCCC;
+}
+li.odd{
+    background: #FFFFEE;
+}
+li.even{
+    background: #FFFFCC;
+}
+</style>
+</head>
+<body>
+<script src = "js/tmpl.js"></script>
+<script>
+	var gen = {
+		title: "Тест по программированию",
+		questions: ["Вопрос №11","Вопрос №2","Вопрос №3"],
+		answers : [["Вариант ответа №1","Вариант ответа №2","Вариант ответа №3"],
+		["Вариант ответа №1","Вариант ответа №2","Вариант ответа №3"],
+		["Вариант ответа №1","Вариант ответа №2","Вариант ответа №3"]],
+		right:[1,2,1],
+	}
+	var str_ls = JSON.stringify(gen);
+
+	localStorage.setItem("str", str_ls);
+	/*-------------------------------------*/
+
+	str_ls = localStorage.getItem("str");
+	console.log(str_ls);
+	var gen1 = JSON.parse(str_ls)
+	console.log(gen1);
+
+	$(function(){
+		var results = document.getElementById("results");
+		results.innerHTML = tmpl("item_tmpl", gen1);
+	});
+	</script>
+
+
+
+	<ul id="results">
+	output results here.
+	</ul>
+
+------------------------------------------------------------
+
+
+<script type="text/html" id="item_tmpl">
+
+<% for(var i=0; i<questions.length; i++){%>
+	<li>№<%=i+1%> <%=questions[i]%> <%=right[i]%></li>
+	<ul id = block<%=i%>>
+		<% for(var j=0;j< answers[i].length; j++){%>
+			<li><input type = checkbox id =a<%=i%><%=j%> name = a<%=i%> >№<%=j+1%> <%=answers[i][j]%></li>
+		<% } %>
+	</ul>
+  <% } %>
+
+</script>
+<br>
+<button id = "send">send</button>
+<script>
+right = [1,2,1];
+	$("#send").click(function(){
+		var current, flag=0;
+		for (var i=0; i < 3; i++){
+			for (var j = 0; j < 3; j++) {
+				current = "#a"+i+j;
+				if ($(current).prop('checked') && (j+1 == right[i])) {
+					flag += 1;
+				}
+			}
+	}
+					alert('Ваш результат = '+flag*100/3+'%');
+
+	 });
+</script>
+</body>
+</html>
