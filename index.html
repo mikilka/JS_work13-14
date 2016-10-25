@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>Test</title>
   	<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
   	<style>
@@ -41,6 +41,7 @@ li.even{
 	$(function(){
 		var results = document.getElementById("results");
 		results.innerHTML = tmpl("item_tmpl", gen1);
+		alert("В каждом вопросе вожможны несколько вариантов ответов!");
 	});
 	</script>
 
@@ -68,18 +69,22 @@ li.even{
 <br>
 <button id = "send">send</button>
 <script>
-right = [1,2,1];
+right = [["True", "True", "False"], ["True", "False", "False"], ["True", "False", "True"]];
 	$("#send").click(function(){
-		var current, flag=0;
+		var current, flag=0, res=0, rightAnswer=0;
 		for (var i=0; i < 3; i++){
 			for (var j = 0; j < 3; j++) {
 				current = "#a"+i+j;
-				if ($(current).prop('checked') && (j+1 == right[i])) {
-					flag += 1;
+				if ($(current).prop('checked')) {
+					flag += 1;  /*считает количество выбранных вариантов*/
+				}
+				if ($(current).prop('checked') && right[i][j] == "True") {
+					rightAnswer += 1;	  /*количество правильных ответов*/
 				}
 			}
 	}
-					alert('Ваш результат = '+flag*100/3+'%');
+		res += 100*rightAnswer/flag;    /*результат в %*/
+					alert("Ваш результат" + res + " %!");
 
 	 });
 </script>
