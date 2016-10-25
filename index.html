@@ -20,13 +20,14 @@ li.even{
 <body>
 <script src = "js/tmpl.js"></script>
 <script>
+'use strict;'
 	var gen = {
 		title: "Тест по программированию",
-		questions: ["Вопрос №11","Вопрос №2","Вопрос №3"],
+		questions: ["Вопрос №1","Вопрос №2","Вопрос №3"],
 		answers : [["Вариант ответа №1","Вариант ответа №2","Вариант ответа №3"],
 		["Вариант ответа №1","Вариант ответа №2","Вариант ответа №3"],
 		["Вариант ответа №1","Вариант ответа №2","Вариант ответа №3"]],
-		right:[1,2,1],
+		right:["1,2","1","1,3"],
 	}
 	var str_ls = JSON.stringify(gen);
 
@@ -41,7 +42,7 @@ li.even{
 	$(function(){
 		var results = document.getElementById("results");
 		results.innerHTML = tmpl("item_tmpl", gen1);
-		alert("В каждом вопросе вожможны несколько вариантов ответов!");
+		alert("В каждом вопросе вожможны несколько вариантов ответов!"+'\n'+"Удачи!");
 	});
 	</script>
 
@@ -55,9 +56,8 @@ li.even{
 
 
 <script type="text/html" id="item_tmpl">
-
 <% for(var i=0; i<questions.length; i++){%>
-	<li>№<%=i+1%> <%=questions[i]%> <%=right[i]%></li>
+	<li>№<%=i+1%> <%=questions[i]%></li>
 	<ul id = block<%=i%>>
 		<% for(var j=0;j< answers[i].length; j++){%>
 			<li><input type = checkbox id =a<%=i%><%=j%> name = a<%=i%> >№<%=j+1%> <%=answers[i][j]%></li>
@@ -69,23 +69,38 @@ li.even{
 <br>
 <button id = "send">send</button>
 <script>
+'use strict;'
 right = [["True", "True", "False"], ["True", "False", "False"], ["True", "False", "True"]];
+
+	var right_ls = JSON.stringify(right);
+
+	localStorage.setItem("str", right_ls);
+	/*-------------------------------------*/
+
+	right_ls = localStorage.getItem("str");
+	console.log("right answers ", right_ls);
+
 	$("#send").click(function(){
-		var current, flag=0, res=0, rightAnswer=0;
+		var current, flag=0, res=0, rightAnswer=0, keys=0;
 		for (var i=0; i < 3; i++){
 			for (var j = 0; j < 3; j++) {
 				current = "#a"+i+j;
 				if ($(current).prop('checked')) {
 					flag += 1;  /*считает количество выбранных вариантов*/
 				}
+				if (right[i][j] == "True") {
+					keys += 1;  /*ключи*/
+				}
 				if ($(current).prop('checked') && right[i][j] == "True") {
 					rightAnswer += 1;	  /*количество правильных ответов*/
 				}
 			}
 	}
-		res += 100*rightAnswer/flag;    /*результат в %*/
-					alert("Ваш результат" + res + " %!");
-
+		if (flag<=keys) {res += 100*(rightAnswer/keys)*(rightAnswer/flag);}   /*сначала считаем отношение кол-ва правильных ответов к кол-ву ключей и домножаем на отношение кол-ва правильных ответов к кол-ву выбраных чекбоксов, чтобы исключить возможность угадывания*/
+			else {res += 100*(rightAnswer/flag)*(keys/flag);}    /*сначала считаем отношение кол-ва правильных ответов к кол-ву выбраных чекбоксов и домножаем на отношение ключей к кол-ву выбраных вариантов*/
+					alert("Ваш результат " + res + " %!");
+		    /*результат в %*/
+		    /*Правильные ответы смотри в консоли. Удачи в прохождении теста ;)*/
 	 });
 </script>
 </body>
